@@ -1,0 +1,21 @@
+.bg-green {
+    background-color: green;
+    height: 40px;
+    width: 50px;
+    color: white;
+    margin: 5px auto;
+    padding: 4px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.bg-red {
+    background-color: red;
+    height: 40px;
+    width: 50px;
+    color: white;
+    margin: 5px auto;
+    padding: 4px;
+    text-align: center;
+    cursor: pointer;
+}
