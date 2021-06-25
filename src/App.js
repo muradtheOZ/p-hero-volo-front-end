@@ -4,6 +4,7 @@ import BookingInfo from './Components/BookingFrom/BookingInfo';
 import Navigation from './Components/Navigation/Navigation';
 
 function App() {
+    
     return ( 
         <div > 
             <Navigation/>

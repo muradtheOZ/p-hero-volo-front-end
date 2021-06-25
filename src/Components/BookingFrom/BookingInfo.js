@@ -9,6 +9,34 @@ import { useEffect } from 'react';
 import axios from 'axios';
 
 const BookingInfo = () => {
+  const[departure,setDeparture] = useState();
+  const[destination, setDestination] = useState();
+  const[seatNumber,setSeatNumber] = useState();
+  const[ClassQuality,setClassQuality] = useState();
+  const[distance,setDistance] = useState();
+  const maxCounter = [];
+  const[side,setSide] = useState({
+    side1:"",
+    side2:""
+  })
+ 
+ 
+ const newdistance =parseFloat(distance *10)
+ const newseatNumber =parseFloat(seatNumber)
+ const newClassQuality =parseFloat(ClassQuality)
+ let fare= parseFloat(newdistance * newseatNumber * newClassQuality);
+
+
+ useEffect(()=>{
+   distanceMeeter()
+ },[destination,departure])
+
+ useEffect(()=>{
+   console.log("hello")
+},[distance,seatNumber,ClassQuality])
+
+ 
+
   const seats = [
     {id:1,seatNo:1,isbooked:false},
     {id:2,seatNo:2,isbooked:false},
@@ -26,15 +54,32 @@ const BookingInfo = () => {
     {id:14,seatNo:14,isbooked:false},
     {id:15,seatNo:15,isbooked:false}
   ]
+
+  const seatTotal =[
+    {value : 1, label:"One Adult"},
+    {value : 2, label:"Two Adult"},
+    {value : 3, label:"Three Adult"},
+    {value : 4, label:"Four Adult"},
+    {value : 5, label:"Five Adult"}
+    
+
+  ]
     const options = [
-        { value: 'Dhaka', label: 'Dhaka' },
-        { value: 'Chittagong', label: 'Chittagong' },
-        { value: 'Rajsahi', label: 'Rajsahi' }
+        { value: 'Dhaka',distanceFromDhaka: 0, side:'center' ,label: 'Dhaka' },
+        { value: 'Chittagong', distanceFromDhaka: -+248, side:'lower-right',  label: 'Chittagong' },
+        { value: 'Rajsahi', distanceFromDhaka: +-248,side:'upper-left',  label: 'Rajsahi' },
+        {value: 'Sylhet', distanceFromDhaka:+(+150), side:'upper-right', label: 'Sylhet'},
+        {value: 'Pabna', distanceFromDhaka:+-153,side:'upper-left', label: 'Pabna'},
+        {value: "Cox's Bazar", distanceFromDhaka:-+398,side:'lower-right', label:"Cox's Bazar"}
+      ];
+
+
+      const SeatClass=[
+        {value:'1', label:'Economy'},
+        {value:'1.5', label:"Business"}
       ]
 
     const [startDate, setStartDate] = useState(new Date());
-    
-    const [departure,setDeparture] = useState("Departure")
 
     const [customSeatAvilable,setCustomSeatAvilable] = useState("bg-green")
     const[customSeatBooked, setCustomSeatBooked] = useState("bg-red")
@@ -42,19 +87,101 @@ const BookingInfo = () => {
     const handleCustomSeatAvailable = (e)=>{
       const clickedSeat = (e.target.innerText);
       e.target.style.background = "red"
-      console.log(e.target.innerText)
       seats.map((seat)=>{
-        if(seat.seatNo == clickedSeat){
+        if(seat.seatNo === clickedSeat){
           seat.isbooked = true;
         }
       })
-      console.log("Hello",seats)
       
     }
 
-    const handleOnChange = (value)=> {
-      console.log("selected value", value.value);
+    const handleOnChangeDeparture =  (value)=> {
+      console.log("Hello departure",value)
+      const newSide = {side1:value.side};
+      setSide(Object.assign(side,newSide))
+      console.log("side one value", side)
+      const distance = (value.distanceFromDhaka)
+       settingTheDeparture(distance)
+      
     }
+
+    const handleOnChangeDestination =  (value)=> {
+      const newSide = {side2:value.side};
+      setSide(Object.assign(side,newSide))
+      console.log("side two value", side)
+      const distance = (value.distanceFromDhaka)
+      settingTheDestination(distance)
+     
+    }
+
+    const distanceMeeter = ()=>{
+      const departureDistance =  parseFloat(departure);
+      const destinatioinDistance = parseFloat(destination);
+
+      if((side.side1 === 'upper-left' && side.side2 ==='lower-right') || (side.side1 === 'lower-right' && side.side2 ==='upper-left')||(side.side1 === 'upper-right' && side.side2 ==='lower-left')||(side.side1 === 'lower-left' && side.side2 ==='upper-right')){
+        const finalDistance = Math.abs(departureDistance+destinatioinDistance)
+      settingTheFinalDistance(finalDistance)
+
+      }
+      else{
+        const finalDistance = Math.abs(departureDistance-destinatioinDistance)
+      settingTheFinalDistance(finalDistance)
+    }
+      
+  
+    }
+    const settingTheFinalDistance =(value)=>{
+      console.log("total distance", value)
+      setDistance(value)
+    }
+    
+
+    
+
+    const handleOnChange = (value) =>{
+
+    }
+
+    const handleSeatClass = (value) =>{
+      const quality = (value.value)
+      settingTheClass(quality)
+    
+    }
+
+    const handleSeatChange = (value) =>{
+      const result  = value.value
+      console.log("clicked Seat", value.value)
+      settingTheSeat(result)
+
+    }
+    const settingTheSeat =(value)=>{
+      console.log("settingthe seat", value);
+      setSeatNumber(value)
+    }
+
+    const settingTheDeparture =(value)=>{
+      console.log("settingthe seat", value);
+      setDeparture(value)
+    }
+
+    const settingTheDestination =(value)=>{
+      console.log("settingthe seat", value);
+      setDestination(value)
+    }
+
+    const settingTheClass =(value)=>{
+      console.log("settingthe seat", value);
+      setClassQuality(value)
+    }
+
+    console.log("Hello Departure Value", departure);
+    console.log("Hello destination Value", destination);
+    console.log("Hello Distancea", distance);
+
+    
+    
+
+    
 
     
 
@@ -67,29 +194,30 @@ const BookingInfo = () => {
       <div className="col-md-3 m-auto p-4">
           <h6>Departure</h6>
       <Select
-           defaultValue={options[0]}
-            options={options} />
+            options={options}
+            onChange={handleOnChangeDeparture} />
       </div>
 
       <div className="col-md-3 m-auto p-4">
       <h6>Destination</h6>
       <Select
-           defaultValue={options[2]}
-           onChange={handleOnChange}
+           onChange={handleOnChangeDestination}
             options={options} />
       </div>
 
       <div className="col-md-3 m-auto p-4">
       <h6>TotalSeat</h6>
       <Select
-           defaultValue={options.value}
-            options={options} />
+           defaultValue={seatTotal[0]}
+            options={seatTotal}
+            onChange={handleSeatChange} />
       </div>
       <div className="col-md-3 m-auto p-4">
       <h6>Class</h6>
       <Select
-           defaultValue={options.value}
-            options={options} />
+           defaultValue={SeatClass[0]}
+            options={SeatClass}
+            onChange={handleSeatClass} />
       </div>
     </div>
 
@@ -115,7 +243,7 @@ const BookingInfo = () => {
                 <div onClick={handleCustomSeatAvailable}>
                 <div className = { seat.isbooked?customSeatBooked:customSeatAvilable}>{seat.seatNo}</div>
                 </div>
-                {console.log("heloo objecti",seat , index)}
+                
                   
                   </div>
               )
@@ -127,6 +255,11 @@ const BookingInfo = () => {
 
     </div>
 
+    </div>
+
+    <div className="row mt-5 text-center">
+          <p className="text-center m-auto"> Hello fees payment </p> 
+          <p>Total Fess:{fare} </p>
     </div>
     </Container>
   );
